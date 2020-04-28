@@ -2,6 +2,8 @@ free c: channel.
 free secretChannel: channel [private].
 
 type xCoor.
+type yCoor.
+type point.
 
 free one : xCoor.
 free two : xCoor.
@@ -10,7 +12,11 @@ free four : xCoor.
 
 fun reconstruct(bitstring, bitstring, bitstring, bitstring): bitstring.
 
-fun f(xCoor) : bitstring [private].
+fun f(xCoor) : yCoor [private].
+fun toPoint(xCoor, yCoor) : point.
+
+reduc forall x: bitstring, y: bitstring; fromPointToY(toPoint(x, y)) = y.
+
 (*reduc forall x: bitstring, y: bitstring, z: bitstring, v: bitstring; split1(x, y ,z) = reconstruct(x,y,z,v).*)
 event secretSharingEnded(bitstring).
 event secretSharingStarted(bitstring).

@@ -1,0 +1,316 @@
+Process 0 (that is, the initial process):
+{1}let xPoint: bitstring = f(one) in
+{2}let yPoint: bitstring = f(two) in
+{3}let zPoint: bitstring = f(three) in
+{4}let vPoint: bitstring = f(four) in
+{5}insert shares(xPoint);
+{6}insert shares(yPoint);
+{7}insert shares(zPoint);
+{8}insert shares(vPoint);
+{9}new dummy: bitstring;
+(
+    {10}!
+    {11}in(c, share_one: bitstring);
+    {12}in(c, share_two: bitstring);
+    {13}in(c, share_three: bitstring);
+    {19}get shares(x: bitstring) suchthat (x = share_one) in
+    {18}get shares(y: bitstring) suchthat (y = share_two) in
+    {17}get shares(z: bitstring) suchthat (z = share_three) in
+    {14}in(secretChannel, s: bitstring);
+    {15}event reach;
+    {16}out(c, s)
+) | (
+    {20}let s_1: bitstring = reconstruct(xPoint,yPoint,zPoint,vPoint) in
+    (
+        {21}!
+        {22}out(secretChannel, s_1)
+    ) | (
+        0
+    ) | (
+        0
+    ) | (
+        0
+    ) | (
+        0
+    ) | (
+        {23}out(c, xPoint)
+    ) | (
+        {24}out(c, yPoint)
+    ) | (
+        {25}out(c, vPoint)
+    )
+)
+
+-- Query not event(reach) in process 0.
+Completing...
+Starting query not event(reach)
+goal reachable: end(reach)
+
+Derivation:
+
+1. The message f(four[]) may be sent to the attacker at output {25}.
+attacker(f(four[])).
+
+2. The entry shares(f(four[])) may be inserted in a table at insert {8}.
+table(shares(f(four[]))).
+
+3. The message reconstruct(f(one[]),f(two[]),f(three[]),f(four[])) may be sent on channel secretChannel[] at output {22}.
+mess(secretChannel[],reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))).
+
+4. The message f(four[]) that the attacker may have by 1 may be received at input {11}.
+The message f(four[]) that the attacker may have by 1 may be received at input {12}.
+The message f(four[]) that the attacker may have by 1 may be received at input {13}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {19}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {18}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {17}.
+The message reconstruct(f(one[]),f(two[]),f(three[]),f(four[])) that may be sent on channel secretChannel[] by 3 may be received at input {14}.
+So event reach may be executed at {15}.
+end(reach).
+
+5. By 4, end(reach).
+The goal is reached, represented in the following fact:
+end(reach).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+insert shares(f(one)) at {5}
+
+insert shares(f(two)) at {6}
+
+insert shares(f(three)) at {7}
+
+insert shares(f(four)) at {8}
+
+new dummy: bitstring creating dummy_1 at {9}
+
+out(c, ~M) with ~M = f(four) at {25}
+
+out(c, ~M_1) with ~M_1 = f(two) at {24}
+
+out(c, ~M_2) with ~M_2 = f(one) at {23}
+
+in(c, ~M) with ~M = f(four) at {11} in copy a
+
+in(c, ~M) with ~M = f(four) at {12} in copy a
+
+in(c, ~M) with ~M = f(four) at {13} in copy a
+
+get shares(f(four)) at {19} in copy a
+
+get shares(f(four)) at {18} in copy a
+
+get shares(f(four)) at {17} in copy a
+
+out(secretChannel, reconstruct(f(one),f(two),f(three),f(four))) at {22} in copy a_1 received at {14} in copy a
+
+event reach at {15} in copy a (goal)
+
+The event reach is executed at {15} in copy a.
+A trace has been found.
+RESULT not event(reach) is false.
+-- Query not attacker(f(one[])) in process 0.
+Completing...
+Starting query not attacker(f(one[]))
+goal reachable: attacker(f(one[]))
+
+Derivation:
+
+1. The message f(one[]) may be sent to the attacker at output {23}.
+attacker(f(one[])).
+
+2. By 1, attacker(f(one[])).
+The goal is reached, represented in the following fact:
+attacker(f(one[])).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+insert shares(f(one)) at {5}
+
+insert shares(f(two)) at {6}
+
+insert shares(f(three)) at {7}
+
+insert shares(f(four)) at {8}
+
+new dummy: bitstring creating dummy_1 at {9}
+
+out(c, ~M) with ~M = f(four) at {25}
+
+out(c, ~M_1) with ~M_1 = f(two) at {24}
+
+out(c, ~M_2) with ~M_2 = f(one) at {23}
+
+The attacker has the message ~M_2 = f(one).
+A trace has been found.
+RESULT not attacker(f(one[])) is false.
+-- Query not attacker(f(two[])) in process 0.
+Completing...
+Starting query not attacker(f(two[]))
+goal reachable: attacker(f(two[]))
+
+Derivation:
+
+1. The message f(two[]) may be sent to the attacker at output {24}.
+attacker(f(two[])).
+
+2. By 1, attacker(f(two[])).
+The goal is reached, represented in the following fact:
+attacker(f(two[])).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+insert shares(f(one)) at {5}
+
+insert shares(f(two)) at {6}
+
+insert shares(f(three)) at {7}
+
+insert shares(f(four)) at {8}
+
+new dummy: bitstring creating dummy_1 at {9}
+
+out(c, ~M) with ~M = f(four) at {25}
+
+out(c, ~M_1) with ~M_1 = f(two) at {24}
+
+out(c, ~M_2) with ~M_2 = f(one) at {23}
+
+The attacker has the message ~M_1 = f(two).
+A trace has been found.
+RESULT not attacker(f(two[])) is false.
+-- Query not attacker(f(three[])) in process 0.
+Completing...
+Starting query not attacker(f(three[]))
+RESULT not attacker(f(three[])) is true.
+-- Query not attacker(f(four[])) in process 0.
+Completing...
+Starting query not attacker(f(four[]))
+goal reachable: attacker(f(four[]))
+
+Derivation:
+
+1. The message f(four[]) may be sent to the attacker at output {25}.
+attacker(f(four[])).
+
+2. By 1, attacker(f(four[])).
+The goal is reached, represented in the following fact:
+attacker(f(four[])).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+insert shares(f(one)) at {5}
+
+insert shares(f(two)) at {6}
+
+insert shares(f(three)) at {7}
+
+insert shares(f(four)) at {8}
+
+new dummy: bitstring creating dummy_1 at {9}
+
+out(c, ~M) with ~M = f(four) at {25}
+
+out(c, ~M_1) with ~M_1 = f(two) at {24}
+
+out(c, ~M_2) with ~M_2 = f(one) at {23}
+
+The attacker has the message ~M = f(four).
+A trace has been found.
+RESULT not attacker(f(four[])) is false.
+-- Query not attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))) in process 0.
+Completing...
+Starting query not attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[])))
+goal reachable: attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[])))
+
+Derivation:
+
+1. The message f(four[]) may be sent to the attacker at output {25}.
+attacker(f(four[])).
+
+2. The entry shares(f(four[])) may be inserted in a table at insert {8}.
+table(shares(f(four[]))).
+
+3. The message reconstruct(f(one[]),f(two[]),f(three[]),f(four[])) may be sent on channel secretChannel[] at output {22}.
+mess(secretChannel[],reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))).
+
+4. The message f(four[]) that the attacker may have by 1 may be received at input {11}.
+The message f(four[]) that the attacker may have by 1 may be received at input {12}.
+The message f(four[]) that the attacker may have by 1 may be received at input {13}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {19}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {18}.
+The entry shares(f(four[])) that may be in a table by 2 may be read at get {17}.
+The message reconstruct(f(one[]),f(two[]),f(three[]),f(four[])) that may be sent on channel secretChannel[] by 3 may be received at input {14}.
+So the message reconstruct(f(one[]),f(two[]),f(three[]),f(four[])) may be sent to the attacker at output {16}.
+attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))).
+
+5. By 4, attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))).
+The goal is reached, represented in the following fact:
+attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+insert shares(f(one)) at {5}
+
+insert shares(f(two)) at {6}
+
+insert shares(f(three)) at {7}
+
+insert shares(f(four)) at {8}
+
+new dummy: bitstring creating dummy_1 at {9}
+
+out(c, ~M) with ~M = f(four) at {25}
+
+out(c, ~M_1) with ~M_1 = f(two) at {24}
+
+out(c, ~M_2) with ~M_2 = f(one) at {23}
+
+in(c, ~M) with ~M = f(four) at {11} in copy a
+
+in(c, ~M) with ~M = f(four) at {12} in copy a
+
+in(c, ~M) with ~M = f(four) at {13} in copy a
+
+get shares(f(four)) at {19} in copy a
+
+get shares(f(four)) at {18} in copy a
+
+get shares(f(four)) at {17} in copy a
+
+out(secretChannel, reconstruct(f(one),f(two),f(three),f(four))) at {22} in copy a_1 received at {14} in copy a
+
+event reach at {15} in copy a
+
+out(c, ~M_3) with ~M_3 = reconstruct(f(one),f(two),f(three),f(four)) at {16} in copy a
+
+The attacker has the message ~M_3 = reconstruct(f(one),f(two),f(three),f(four)).
+A trace has been found.
+RESULT not attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))) is false.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query not event(reach) is false.
+
+Query not attacker(f(one[])) is false.
+
+Query not attacker(f(two[])) is false.
+
+Query not attacker(f(three[])) is true.
+
+Query not attacker(f(four[])) is false.
+
+Query not attacker(reconstruct(f(one[]),f(two[]),f(three[]),f(four[]))) is false.
+
+--------------------------------------------------------------
+
