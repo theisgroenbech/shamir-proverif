@@ -1,0 +1,64 @@
+free c: channel.
+free secretChannel: channel [private].
+
+type xCoor.
+
+free one : xCoor.
+free two : xCoor.
+free three : xCoor.
+free four : xCoor.
+
+fun reconstruct(bitstring, bitstring, bitstring, bitstring): bitstring.
+
+fun f(xCoor) : bitstring [private].
+(*reduc forall x: bitstring, y: bitstring, z: bitstring, v: bitstring; split1(x, y ,z) = reconstruct(x,y,z,v).*)
+event secretSharingEnded(bitstring).
+event secretSharingStarted(bitstring).
+event reach.
+
+query event (reach).
+query attacker (f(one)).
+query attacker (f(two)).
+query attacker (f(three)).
+query attacker (f(four)).
+query attacker (reconstruct(f(one), f(two), f(three), f(four))).
+
+table shares(bitstring).
+(*query x: bitstring, y: bitstring, z: bitstring, v: bitstring; event (secretSharingEnded(reconstructFull(x,y,z,v))) ==> event (secretSharingStarted (reconstructFull(x,y,z,v))). *)
+
+let adversary (share : bitstring) =
+    out(c, share);
+    0.
+
+let participant (share : bitstring) =
+  0.
+
+let mathwizard =
+  in(c, share_one : bitstring);
+  in(c, share_two : bitstring);
+  in(c, share_three : bitstring);
+  if(share_one <> share_two && share_two <> share_three && share_one <> share_three) then
+  get shares(x: bitstring) suchthat x = share_one in
+  get shares(y: bitstring) suchthat y = share_two in
+  get shares(z: bitstring) suchthat z = share_three in
+
+  in(secretChannel, s : bitstring);
+  event reach();
+  out(c, s).
+
+
+
+process
+  let xPoint = f(one) in
+  let yPoint = f(two) in
+  let zPoint = f(three) in
+  let vPoint = f(four) in
+  insert shares(xPoint);
+  insert shares(yPoint);
+  insert shares(zPoint);
+  insert shares(vPoint);
+  !mathwizard |
+  let s = reconstruct(xPoint, yPoint, zPoint, vPoint) in
+  (!out(secretChannel, s)) |
+  participant (xPoint) | participant (yPoint) | participant (zPoint) | participant (vPoint) | adversary(xPoint) | adversary(yPoint) | adversary(zPoint)
+(*  event secretSharingStarted (reconstructFull(x,y,z,v)); *)
