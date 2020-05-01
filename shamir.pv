@@ -1,3 +1,4 @@
+set traceDisplay = long.
 free c: channel.
 free secretChannel: channel [private].
 
@@ -13,9 +14,6 @@ free four : xCoor.
 fun reconstruct(yCoor, yCoor, yCoor, yCoor): bitstring.
 
 fun f(xCoor) : yCoor [private].
-fun toPoint(xCoor, yCoor) : point.
-
-reduc forall x: xCoor, y: yCoor; fromPointToY(toPoint(x, y)) = y.
 
 (*reduc forall x: bitstring, y: bitstring, z: bitstring, v: bitstring; split1(x, y ,z) = reconstruct(x,y,z,v).*)
 event secretSharingEnded(bitstring).
@@ -30,14 +28,25 @@ query attacker (f(four)).
 query attacker (reconstruct(f(one), f(two), f(three), f(four))).
 
 table shares(yCoor).
-(*query x: bitstring, y: bitstring, z: bitstring, v: bitstring; event (secretSharingEnded(reconstructFull(x,y,z,v))) ==> event (secretSharingStarted (reconstructFull(x,y,z,v))). *)
+query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStarted (reconstruct(x,y,z,v))).
 
 let adversary (share : yCoor) =
     out(c, share);
     0.
 
-let participant (share : yCoor) =
-  0.
+let participant (share : yCoor, pc: channel) =
+  out(pc, share)
+  | (in(pc, share1 : yCoor); in(pc, share2 : yCoor); in(pc, share3 : yCoor);
+  (
+      (if(share1 <> share2 && share2 <> share3 && share1 <> share3) then
+      get shares(x: yCoor) suchthat x = share1 in
+      get shares(y: yCoor) suchthat y = share2 in
+      get shares(z: yCoor) suchthat z = share3 in
+      in(secretChannel, s : bitstring);
+      event secretSharingStarted(s);
+      event secretSharingEnded(s)
+      )
+  )).
 
 let attackerCombine =
   in(c, share_one : yCoor);
@@ -50,6 +59,7 @@ let attackerCombine =
 
   in(secretChannel, s : bitstring);
   event reach();
+  event secretSharingEnded(s);
   out(c, s).
 
 
@@ -65,6 +75,6 @@ process
   insert shares(vPoint);
   !attackerCombine |
   let s = reconstruct(xPoint, yPoint, zPoint, vPoint) in
+  new pc : channel;
   (!out(secretChannel, s)) |
-  participant (xPoint) | participant (yPoint) | participant (zPoint) | participant (vPoint) | adversary(xPoint) | adversary(yPoint) | adversary(zPoint)
-(*  event secretSharingStarted (reconstructFull(x,y,z,v)); *)
+  participant (xPoint, pc) | participant (yPoint, pc) | participant (zPoint, pc) | participant (vPoint, pc) | adversary(xPoint) | adversary(yPoint)| adversary(zPoint)
