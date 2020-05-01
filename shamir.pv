@@ -10,12 +10,12 @@ free two : xCoor.
 free three : xCoor.
 free four : xCoor.
 
-fun reconstruct(bitstring, bitstring, bitstring, bitstring): bitstring.
+fun reconstruct(yCoor, yCoor, yCoor, yCoor): bitstring.
 
 fun f(xCoor) : yCoor [private].
 fun toPoint(xCoor, yCoor) : point.
 
-reduc forall x: bitstring, y: bitstring; fromPointToY(toPoint(x, y)) = y.
+reduc forall x: xCoor, y: yCoor; fromPointToY(toPoint(x, y)) = y.
 
 (*reduc forall x: bitstring, y: bitstring, z: bitstring, v: bitstring; split1(x, y ,z) = reconstruct(x,y,z,v).*)
 event secretSharingEnded(bitstring).
@@ -29,24 +29,24 @@ query attacker (f(three)).
 query attacker (f(four)).
 query attacker (reconstruct(f(one), f(two), f(three), f(four))).
 
-table shares(bitstring).
+table shares(yCoor).
 (*query x: bitstring, y: bitstring, z: bitstring, v: bitstring; event (secretSharingEnded(reconstructFull(x,y,z,v))) ==> event (secretSharingStarted (reconstructFull(x,y,z,v))). *)
 
-let adversary (share : bitstring) =
+let adversary (share : yCoor) =
     out(c, share);
     0.
 
-let participant (share : bitstring) =
+let participant (share : yCoor) =
   0.
 
-let mathwizard =
-  in(c, share_one : bitstring);
-  in(c, share_two : bitstring);
-  in(c, share_three : bitstring);
+let attackerCombine =
+  in(c, share_one : yCoor);
+  in(c, share_two : yCoor);
+  in(c, share_three : yCoor);
   if(share_one <> share_two && share_two <> share_three && share_one <> share_three) then
-  get shares(x: bitstring) suchthat x = share_one in
-  get shares(y: bitstring) suchthat y = share_two in
-  get shares(z: bitstring) suchthat z = share_three in
+  get shares(x: yCoor) suchthat x = share_one in
+  get shares(y: yCoor) suchthat y = share_two in
+  get shares(z: yCoor) suchthat z = share_three in
 
   in(secretChannel, s : bitstring);
   event reach();
@@ -63,7 +63,7 @@ process
   insert shares(yPoint);
   insert shares(zPoint);
   insert shares(vPoint);
-  !mathwizard |
+  !attackerCombine |
   let s = reconstruct(xPoint, yPoint, zPoint, vPoint) in
   (!out(secretChannel, s)) |
   participant (xPoint) | participant (yPoint) | participant (zPoint) | participant (vPoint) | adversary(xPoint) | adversary(yPoint) | adversary(zPoint)
