@@ -18,6 +18,7 @@ fun f(xCoor) : yCoor [private].
 (*reduc forall x: bitstring, y: bitstring, z: bitstring, v: bitstring; split1(x, y ,z) = reconstruct(x,y,z,v).*)
 event secretSharingEnded(bitstring).
 event secretSharingStarted(bitstring).
+event secretSharingStartedOne(yCoor).
 event reach.
 
 query event (reach).
@@ -29,13 +30,17 @@ query attacker (reconstruct(f(one), f(two), f(three), f(four))).
 
 table shares(yCoor).
 query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStarted (reconstruct(x,y,z,v))).
+query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStartedOne (x)).
+query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStartedOne (y)).
+query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStartedOne (z)).
+query x: yCoor, y: yCoor, z: yCoor, v: yCoor; event (secretSharingEnded(reconstruct(x,y,z,v))) ==> event (secretSharingStartedOne (v)).
 
 let adversary (share : yCoor) =
     out(c, share);
     0.
 
 let participant (share : yCoor, pc: channel) =
-  out(pc, share)
+  out(pc, share); event secretSharingStartedOne(share)
   | (in(pc, share1 : yCoor); in(pc, share2 : yCoor); in(pc, share3 : yCoor);
   (
       (if(share1 <> share2 && share2 <> share3 && share1 <> share3) then
@@ -77,4 +82,4 @@ process
   let s = reconstruct(xPoint, yPoint, zPoint, vPoint) in
   new pc : channel;
   (!out(secretChannel, s)) |
-  participant (xPoint, pc) | participant (yPoint, pc) | participant (zPoint, pc) | participant (vPoint, pc) | adversary(xPoint) | adversary(yPoint)| adversary(zPoint)
+  participant (xPoint, pc) | participant (yPoint, pc) | participant (zPoint, pc) | participant (vPoint, pc) | adversary(xPoint) | adversary(yPoint)
